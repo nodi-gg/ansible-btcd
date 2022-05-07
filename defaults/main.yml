@@ -1,0 +1,7 @@
+---
+btcd_branch: master
+btcd_install_path: /usr/local/bin
+
+btcd_user: bitcoin
+btcd_group: bitcoin
+btcd_data_dir: /var/lib/btcd

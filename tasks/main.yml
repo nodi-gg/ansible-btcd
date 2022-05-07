@@ -1,0 +1,38 @@
+---
+- name: check btcd executable is present in PATH
+  ansible.builtin.command: which btcd
+  register: btcd_exists
+  changed_when: btcd_exists.rc != 0
+  ignore_errors: true
+
+- name: btcd git checkout
+  ansible.builtin.git:
+    repo: 'https://github.com/btcsuite/btcd'
+    dest: "{{ ansible_local.golang.general.home }}/src/github.com/btcsuite/btcd"
+    version: "{{ btcd_branch }}"
+  when: btcd_exists.rc != 0
+
+- name: btcd install
+  command: "go install -v . ./cmd/..."
+  args:
+    chdir: "{{ ansible_local.golang.general.home }}/src/github.com/btcsuite/btcd"
+  environment:
+    PATH: "{{ ansible_env.PATH }}:{{ ansible_local.golang.general.home }}/bin"
+    GOBIN: "{{ btcd_install_path }}"
+    GO111MODULE: "on"
+  when: btcd_exists.rc != 0
+
+- name: create bitcoin system group
+  group:
+    name: "{{ btcd_group }}"
+    system: true
+    state: present
+    
+- name: create bitcoin system user
+  user:
+    name: "{{ btcd_user }}"
+    system: true
+    shell: "/usr/sbin/nologin"
+    group: "{{ btcd_group }}"
+    createhome: false
+    home: "{{ btcd_data_dir }}"

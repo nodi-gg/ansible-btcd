@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  namespace: nodi
+  role_name: btcd
+  author: Djuri Baars
+  description: Set up a btcd lightning node from source
+  license: Apache 2.0
+  min_ansible_version: 2.1
+  galaxy_tags: [bitcoin, btcd]
+  platforms:
+    - name: Debian
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+dependencies: 
+  - gantsign.golang
